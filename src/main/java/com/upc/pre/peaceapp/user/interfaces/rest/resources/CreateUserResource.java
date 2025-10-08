@@ -8,11 +8,11 @@ public record CreateUserResource(
         @Schema(description = "User's first name", example = "User")
         String name,
 
-        @Schema(description = "User's last name", example = "123")
-        String lastname,
-
         @Schema(description = "User's email address", example = "user@example.com")
         String email,
+
+        @Schema(description = "User's last name", example = "123")
+        String lastname,
 
         @Schema(description = "User's phone number", example = "987654321")
         String phonenumber,

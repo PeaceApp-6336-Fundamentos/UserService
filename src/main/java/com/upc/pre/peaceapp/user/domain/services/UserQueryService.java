@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface UserQueryService {
     Optional<UserProfile> handle(GetUserByEmailQuery query);
+    boolean existsById(Long id);
 }

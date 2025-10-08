@@ -18,7 +18,10 @@ public class UserQueryServiceImpl implements UserQueryService {
     public UserQueryServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-
+    @Override
+    public boolean existsById(Long id) {
+        return userRepository.existsById(id);
+    }
     @Override
     public Optional<UserProfile> handle(GetUserByEmailQuery query) {
         log.info("Fetching user by email: {}", query.email());

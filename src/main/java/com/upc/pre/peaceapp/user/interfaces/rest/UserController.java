@@ -38,7 +38,11 @@ public class UserController {
                         .body("{\"message\":\"User could not be created\"}")
         );
     }
-
+    @GetMapping("/{id}/exists")
+    public ResponseEntity<Boolean> userExists(@PathVariable Long id) {
+        boolean exists = queryService.existsById(id);
+        return ResponseEntity.ok(exists);
+    }
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody UpdateUserResource body) {
         var updated = commandService.handle(UpdateUserCommandFromResourceAssembler.toCommand(id, body));
