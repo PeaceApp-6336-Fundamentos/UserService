@@ -1,60 +1,72 @@
 package com.upc.pre.peaceapp.user.interfaces.rest;
 
-import com.upc.pre.peaceapp.user.application.internal.commandservices.UserCommandService;
-import com.upc.pre.peaceapp.user.application.internal.queryservices.UserQueryService;
-import com.upc.pre.peaceapp.user.domain.model.commands.CreateUserCommand;
 import com.upc.pre.peaceapp.user.domain.model.commands.DeleteUserCommand;
+import com.upc.pre.peaceapp.user.domain.services.UserCommandService;
+import com.upc.pre.peaceapp.user.domain.services.UserQueryService;
 import com.upc.pre.peaceapp.user.interfaces.rest.resources.CreateUserResource;
 import com.upc.pre.peaceapp.user.interfaces.rest.resources.UpdateUserResource;
 import com.upc.pre.peaceapp.user.interfaces.rest.transform.CreateUserCommandFromResourceAssembler;
 import com.upc.pre.peaceapp.user.interfaces.rest.transform.UpdateUserCommandFromResourceAssembler;
 import com.upc.pre.peaceapp.user.interfaces.rest.transform.UserResourceFromEntityAssembler;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/users")
+@Tag(name = "Users", description = "Operations related to user management")
 public class UserController {
 
-    private final UserCommandService commands;
-    private final UserQueryService queries;
+    private final UserCommandService commandService;
+    private final UserQueryService queryService;
 
-    public UserController(UserCommandService commands, UserQueryService queries) {
-        this.commands = commands;
-        this.queries = queries;
+    public UserController(UserCommandService commandService, UserQueryService queryService) {
+        this.commandService = commandService;
+        this.queryService = queryService;
     }
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody CreateUserResource body) {
-        var id = commands.handle(CreateUserCommandFromResourceAssembler.toCommand(body));
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(queries.getById(id).map(UserResourceFromEntityAssembler::toResource));
+        var user = commandService.handle(CreateUserCommandFromResourceAssembler.toCommand(body));
+
+        return user.<ResponseEntity<?>>map(u ->
+                ResponseEntity.status(HttpStatus.CREATED)
+                        .body(UserResourceFromEntityAssembler.toResource(u))
+        ).orElseGet(() ->
+                ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("{\"message\":\"User could not be created\"}")
+        );
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody UpdateUserResource body) {
-        commands.handle(UpdateUserCommandFromResourceAssembler.toCommand(id, body));
-        return ResponseEntity.ok(queries.getById(id).map(UserResourceFromEntityAssembler::toResource));
+        var updated = commandService.handle(UpdateUserCommandFromResourceAssembler.toCommand(id, body));
+
+        return updated.<ResponseEntity<?>>map(u ->
+                ResponseEntity.ok(UserResourceFromEntityAssembler.toResource(u))
+        ).orElseGet(() ->
+                ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("{\"message\":\"User not found\"}")
+        );
     }
 
-    @GetMapping("/{username}")
-    public ResponseEntity<?> getByUsername(@PathVariable String username) {
-        return queries.getByEmail(username)
+    @GetMapping("/email/{email}")
+    public ResponseEntity<?> getByEmail(@PathVariable String email) {
+        return queryService.handle(new com.upc.pre.peaceapp.user.domain.model.queries.GetUserByEmailQuery(email))
                 .<ResponseEntity<?>>map(u -> ResponseEntity.ok(UserResourceFromEntityAssembler.toResource(u)))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body("{\"message\":\"User not found\"}"));
     }
 
-    @GetMapping
-    public ResponseEntity<?> getAll() {
-        var list = queries.getAll().stream().map(UserResourceFromEntityAssembler::toResource).toList();
-        return ResponseEntity.ok(list);
-    }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
-        commands.handle(new DeleteUserCommand(id));
-        return ResponseEntity.ok().build();
+        try {
+            commandService.handle(new DeleteUserCommand(id));
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("{\"message\":\"" + e.getMessage() + "\"}");
+        }
     }
 }

@@ -2,8 +2,15 @@ package com.upc.pre.peaceapp.user;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {
+		"com.upc.pre.peaceapp.user",
+		"com.upc.pre.peaceapp.shared.documentation"
+})
+@EnableDiscoveryClient
+@EnableJpaAuditing
 public class PeaceappUserServiceApplication {
 
 	public static void main(String[] args) {
