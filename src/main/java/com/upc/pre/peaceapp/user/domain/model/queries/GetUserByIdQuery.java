@@ -1,4 +1,2 @@
 package com.upc.pre.peaceapp.user.domain.model.queries;
-
-public class GetUserByIdQuery {
-}
+public record GetUserByIdQuery(Long id) {}

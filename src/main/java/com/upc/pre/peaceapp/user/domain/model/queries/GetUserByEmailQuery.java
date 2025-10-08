@@ -1,4 +1,2 @@
 package com.upc.pre.peaceapp.user.domain.model.queries;
-
-public class GetUserByEmailQuery {
-}
+public record GetUserByEmailQuery(String username) {}

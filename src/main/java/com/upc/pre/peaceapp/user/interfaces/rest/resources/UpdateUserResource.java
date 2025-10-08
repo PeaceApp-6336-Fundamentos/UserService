@@ -1,4 +1,3 @@
 package com.upc.pre.peaceapp.user.interfaces.rest.resources;
 
-public class UpdateUserResource {
-}
+public record UpdateUserResource(String username) { }

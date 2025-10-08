@@ -1,4 +1,2 @@
 package com.upc.pre.peaceapp.user.domain.model.commands;
-
-public class UpdateUserCommand {
-}
+public record UpdateUserCommand(Long id, String username) {}

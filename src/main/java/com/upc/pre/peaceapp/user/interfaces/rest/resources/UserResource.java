@@ -1,4 +1,5 @@
 package com.upc.pre.peaceapp.user.interfaces.rest.resources;
 
-public class UserResource {
-}
+import java.util.List;
+
+public record UserResource(Long id, String username, List<String> roles) { }

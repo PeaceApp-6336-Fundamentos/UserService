@@ -1,4 +1,8 @@
 package com.upc.pre.peaceapp.user.infrastructure.persistence.jpa;
 
-public class SpringDataUserRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
+
+public interface SpringDataUserRepository extends JpaRepository<UserJpaEntity, Long> {
+    Optional<UserJpaEntity> findByUsername(String username);
 }
