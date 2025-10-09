@@ -11,11 +11,12 @@ public class UpdateUserCommandFromResourceAssembler {
         return new UpdateUserCommand(
                 id,
                 r.name(),
-                r.lastname(),
                 r.email(),
+                r.lastname(),
                 r.phonenumber(),
-                r.profileImage(),
-                r.userId()
+                r.userId(),
+                r.profileImage()
         );
     }
+
 }
