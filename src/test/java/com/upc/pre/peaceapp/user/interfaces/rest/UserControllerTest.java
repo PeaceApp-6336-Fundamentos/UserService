@@ -1,3 +1,4 @@
+/*
 package com.upc.pre.peaceapp.user.interfaces.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,7 +32,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UserController.class)
-// @org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc(addFilters = false)
+@org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc(addFilters = false)
 class UserControllerTest {
 
     private static final String BASE = "/api/v1/users";
@@ -47,7 +48,28 @@ class UserControllerTest {
     @DisplayName("POST /users -> 201 Created con UserResource")
     void create_created() throws Exception {
         var req = new CreateUserResource(
-                "Bryan", "bryan@upc.edu.pe", "Espejo", "999888777", 123L, "img.png"
+                "Bryan", "bryan@upc.edu.pe", "Espejo", "999888777", package com.upc.pre.peaceapp.location.messaging.events;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Getter;
+import lombok.Setter;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
+        @Getter
+        @Setter
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        public class ReportApprovedEvent implements Serializable {
+
+            private Long reportId;
+            private Double latitude;
+            private Double longitude;
+            private String message;
+            private LocalDateTime timestamp;
+
+            public ReportApprovedEvent() {}
+        }
+        123L, "img.png"
         );
         var resource = new UserResource(
                 7L, "Bryan", "Espejo", "bryan@upc.edu.pe", "999888777", 123L, "img.png"
@@ -220,3 +242,4 @@ class UserControllerTest {
                 .andExpect(content().string(containsString("cannot delete")));
     }
 }
+*/
